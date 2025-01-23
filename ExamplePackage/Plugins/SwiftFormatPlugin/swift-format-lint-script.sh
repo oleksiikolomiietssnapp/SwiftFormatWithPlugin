@@ -22,10 +22,6 @@ fi
 echo "PACKAGE_DIRECTORY: $PACKAGE_DIRECTORY"
 echo "CONFIG_PATH: $CONFIG_PATH"
 
-# Debugging outputs for paths
-echo "PACKAGE_DIRECTORY: $PACKAGE_DIRECTORY"
-echo "CONFIG_PATH: $CONFIG_PATH"
-
 # Check if the configuration file exists
 if [ ! -f "$CONFIG_PATH" ]; then
     echo "error: Config file not found at $CONFIG_PATH. Ensure you provide a valid .swiftformat configuration file." >&2
