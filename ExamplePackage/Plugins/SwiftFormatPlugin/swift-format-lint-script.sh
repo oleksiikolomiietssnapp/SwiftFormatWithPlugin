@@ -11,6 +11,7 @@ fi
 # Step 2: Resolve paths
 PACKAGE_DIRECTORY=$1
 CONFIG_PATH=$2
+STAMP_PATH=$3
 
 # Validate the provided arguments
 if [ -z "$PACKAGE_DIRECTORY" ] || [ -z "$CONFIG_PATH" ]; then
@@ -58,3 +59,11 @@ echo "$output" | while IFS= read -r line; do
         echo "No match for line: $line" >&2
     fi
 done
+
+# Step 5: Create/Update the stamp file
+# This tells Xcode's build engine that this task is officially "Done".
+# Without this, Xcode keeps the old warnings forever.
+touch "$STAMP_PATH"
+
+# Exit with 0 so the build continues even if there are lint warnings
+exit 0

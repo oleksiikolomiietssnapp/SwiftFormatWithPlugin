@@ -12,14 +12,26 @@ struct SwiftLintPlugin: BuildToolPlugin {
             .appending(path: "Plugins/SwiftFormatPlugin/swift-format-lint-script.sh")
             .path
 
-        let configurationPath = context.package
+        let configuration = context.package
             .directoryURL
             .appending(path: ".swiftformat")
-            .path
 
         let packagePath = context.package
             .directoryURL
             .path
+
+        // Collect your input files so Xcode knows when to re-run
+        let swiftSourceFiles =
+            target.sourceModule?.sourceFiles
+            .filter { $0.type == .source && $0.url.pathExtension == "swift" }
+            .map { $0.url }
+            ?? []
+
+        // Define a "Stamp" file in the plugin's working directory
+        // This file tells Xcode "The linting for this build is done"
+        let timestampFile = context.pluginWorkDirectoryURL
+            .appending(path: "swiftformat.stamp")
+            .path()
 
         return [
             .buildCommand(
@@ -28,11 +40,12 @@ struct SwiftLintPlugin: BuildToolPlugin {
                 arguments: [
                     scriptPath,
                     packagePath,
-                    configurationPath,
+                    configuration.path,
+                    timestampFile,
                 ],
                 environment: [:],
-                inputFiles: [],
-                outputFiles: []
+                inputFiles: swiftSourceFiles,
+                outputFiles: [configuration]
             )
         ]
     }
